@@ -368,3 +368,23 @@ h3 { margin: 0; font-size: 17px; }
 .cardpile.unknown .cchip { background: var(--bad-soft); color: var(--ant); border-color: transparent; }
 .cardpile { flex-direction: column; gap: 4px; }
 .t-word { flex-wrap: wrap; row-gap: 0; }
+
+/* My collection */
+.seg.wrap { flex-wrap: wrap; }
+.add-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.add-row input {
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+#c-nums { flex: 1; min-width: 160px; }
+#c-rand-n { width: 72px; }
+.panel .pile-head h2 { margin: 0; }
+.pile .cchips { margin: 6px 0 10px; }
+button.cchip { cursor: pointer; color: var(--ink); font: inherit; font-size: 13px; }
+button.cchip:hover { text-decoration: line-through; }
+.cchips.known .cchip { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.btn.bad.on { background: var(--bad-soft); border-color: transparent; }

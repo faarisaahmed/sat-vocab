@@ -66,9 +66,10 @@ function render() {
   card.hidden = !has;
   $("empty").hidden = has;
   if (!has) {
-    $("empty").textContent = $("source").value === "unknown"
-      ? "Your don't-know list is empty."
-      : "No words match that search.";
+    $("empty").textContent = {
+      unknown: "Your don't-know list is empty.",
+      training: "Your training pile is empty.",
+    }[$("source").value] || "No words match that search.";
     $("counter").textContent = "0 / 0";
     $("bar").style.width = "0";
     return;
@@ -103,6 +104,7 @@ function inSource(c) {
   const src = $("source").value;
   if (src === "red" || src === "grey") return colorOf(c.n) === src;
   if (src === "unknown") return unknown.has(c.n);
+  if (src === "training") return window.trainingSet().has(c.n);
   return true;
 }
 
@@ -166,22 +168,24 @@ function renderList() {
 }
 $("list-search").addEventListener("input", renderList);
 
-const MODES = ["cards", "train", "list"];
+const MODES = ["cards", "collection", "list"];
 function setMode(mode) {
+  if (!MODES.includes(mode)) mode = "cards";
   MODES.forEach((m) => {
     $(`${m}-view`).hidden = m !== mode;
     $(`mode-${m}`).classList.toggle("active", m === mode);
   });
   if (mode === "list") renderList();
   if (mode === "cards") filter();
-  if (mode === "train") window.renderTrain();
+  if (mode === "collection") window.renderCollection();
   store.set("mode", mode);
 }
 MODES.forEach((m) => $(`mode-${m}`).addEventListener("click", () => setMode(m)));
 
-// Open the card viewer on just the don't-know list (used by Train mode).
-function studyUnknown() {
-  $("source").value = "unknown";
+// Open the card viewer on the don't-know list or the current person's
+// training pile (used by My collection).
+function studySource(src) {
+  $("source").value = src;
   $("search").value = "";
   setMode("cards");
 }

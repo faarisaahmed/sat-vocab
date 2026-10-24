@@ -14,7 +14,7 @@
     <h1>SAT Vocab</h1>
     <div class="modes" role="tablist">
       <button id="mode-cards" class="mode active" role="tab">Cards</button>
-      <button id="mode-train" class="mode" role="tab">Train</button>
+      <button id="mode-collection" class="mode" role="tab">My collection</button>
       <button id="mode-list" class="mode" role="tab">All words</button>
     </div>
   </header>
@@ -26,6 +26,7 @@
           <option value="all">All words</option>
           <option value="red">Red only (1–100)</option>
           <option value="grey">Grey only (101–200)</option>
+          <option value="training">My training pile</option>
           <option value="unknown">Don't-know list</option>
         </select>
         <input id="search" type="search" placeholder="Search a word or card #…" autocomplete="off">
@@ -70,42 +71,50 @@
       <p class="keys">← → to move · space to flip</p>
     </section>
 
-    <section id="train-view" hidden>
-      <div id="setup" class="panel">
-        <h2>New study session</h2>
-        <p class="muted">Each physical card has a red word and a grey word, so 10 cards = 20 words per person.</p>
-        <div class="fields">
-          <label>Players
-            <select id="t-count"><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
-          </label>
-          <label>Cards each
-            <input id="t-per" type="number" min="1" max="100" value="10">
-          </label>
-          <label>Start at card #
-            <input id="t-start" type="number" min="1" max="100" value="1">
-          </label>
+    <section id="collection-view" hidden>
+      <div class="session-bar">
+        <div class="seg wrap" id="c-people" aria-label="Whose collection"></div>
+        <div class="seg" id="c-focus" role="group" aria-label="Which color to focus on">
+          <button data-f="red"><span class="dot" data-color="red"></span>Red</button>
+          <button data-f="grey"><span class="dot" data-color="grey"></span>Grey</button>
+          <button data-f="both">Both</button>
         </div>
-        <div id="t-names" class="fields"></div>
-        <label class="check"><input type="checkbox" id="t-random"> Deal random cards instead</label>
-        <p id="t-preview" class="preview"></p>
-        <button id="t-go" class="btn primary">Start session</button>
       </div>
 
-      <div id="session" hidden>
-        <div class="session-bar">
-          <div class="seg" id="t-filter" role="group" aria-label="Which color">
-            <button data-f="red"><span class="dot" data-color="red"></span>Red</button>
-            <button data-f="grey"><span class="dot" data-color="grey"></span>Grey</button>
-            <button data-f="both">Both</button>
+      <div class="panel">
+        <div class="pile-head">
+          <h2 id="c-name"></h2>
+          <div>
+            <button id="c-rename" class="btn small">Rename</button>
+            <button id="c-remove-person" class="btn small">Remove</button>
           </div>
-          <button id="t-end" class="btn">New session</button>
         </div>
-        <p class="muted small">Tap a word to check its definition.</p>
-        <div id="players" class="players"></div>
-        <div class="pile">
-          <h3>Know for sure <span class="count" id="known-count">0</span></h3>
-          <div id="known-list"></div>
+        <p class="muted small">Picked up some cards? Type their numbers to add them to your training pile. 67 and 167 are the same card.</p>
+        <div class="add-row">
+          <input id="c-nums" type="text" inputmode="numeric" placeholder="e.g. 67 41 12 88" autocomplete="off">
+          <button id="c-add-btn" class="btn primary">Add cards</button>
         </div>
+        <div class="add-row">
+          <span class="muted small">Or deal me</span>
+          <input id="c-rand-n" type="number" min="1" max="100" value="10">
+          <button id="c-rand" class="btn">random new cards</button>
+        </div>
+        <p id="c-msg" class="preview"></p>
+      </div>
+
+      <div class="pile">
+        <div class="pile-head">
+          <h3>In training <span class="count bad" id="tr-count">0</span></h3>
+          <button id="tr-study" class="btn small">Flip through as flashcards</button>
+        </div>
+        <p class="muted small">Tap a word to check it. Mark it "Def know" once you've got it; tap a card # to take it out of your collection.</p>
+        <div id="tr-body"></div>
+      </div>
+
+      <div class="pile">
+        <h3>Def know <span class="count" id="dk-count">0</span></h3>
+        <p class="muted small">Cards whose words you know for the color you're focusing on.</p>
+        <div id="dk-body"></div>
       </div>
 
       <div class="pile">
@@ -116,7 +125,7 @@
             <button id="unk-clear" class="btn small">Clear</button>
           </div>
         </div>
-        <p class="muted small">Shared list, saved on this device and kept between sessions.</p>
+        <p class="muted small">Shared by everyone, for words nobody knows.</p>
         <div id="unk-list"></div>
       </div>
     </section>
@@ -129,6 +138,6 @@
 
   <script src="data/vocab.js"></script>
   <script src="app.js"></script>
-  <script src="train.js"></script>
+  <script src="collection.js"></script>
 </body>
 </html>
