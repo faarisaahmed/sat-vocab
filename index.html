@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SAT Vocab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>SAT Vocab</h1>
+    <div class="modes" role="tablist">
+      <button id="mode-cards" class="mode active" role="tab">Cards</button>
+      <button id="mode-list" class="mode" role="tab">All words</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="cards-view">
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Search words…" autocomplete="off">
+        <button id="shuffle" class="btn">Shuffle</button>
+        <button id="reset" class="btn">A–Z</button>
+      </div>
+
+      <div class="stage">
+        <div id="card" class="card" tabindex="0" aria-live="polite">
+          <div class="face front">
+            <span class="pos" id="f-pos"></span>
+            <h2 class="word" id="f-word"></h2>
+            <p class="pron" id="f-pron"></p>
+            <p class="hint">Click or press space to flip</p>
+          </div>
+          <div class="face back">
+            <div class="back-head">
+              <h3 id="b-word"></h3>
+              <span class="pos" id="b-pos"></span>
+            </div>
+            <p class="def" id="b-def"></p>
+            <p class="ex" id="b-ex"></p>
+            <div class="rel">
+              <div><span class="label">Synonyms</span><div class="chips" id="b-syn"></div></div>
+              <div><span class="label">Antonyms</span><div class="chips ant" id="b-ant"></div></div>
+            </div>
+          </div>
+        </div>
+        <p id="empty" class="empty" hidden>No words match that search.</p>
+      </div>
+
+      <div class="nav">
+        <button id="prev" class="btn round" aria-label="Previous">&larr;</button>
+        <span id="counter" class="counter"></span>
+        <button id="next" class="btn round" aria-label="Next">&rarr;</button>
+      </div>
+      <div class="progress"><div id="bar"></div></div>
+      <p class="keys">← → to move · space to flip</p>
+    </section>
+
+    <section id="list-view" hidden>
+      <input id="list-search" type="search" placeholder="Search words or definitions…" autocomplete="off">
+      <div id="list" class="list"></div>
+    </section>
+  </main>
+
+  <script src="data/vocab.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
