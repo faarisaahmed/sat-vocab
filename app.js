@@ -1,10 +1,37 @@
 const ALL = [...window.VOCAB].sort((a, b) => a.n - b.n);
+const BY_N = new Map(ALL.map((c) => [c.n, c]));
 let order = [...ALL];
 let deck = order;
 let i = 0;
 
 const $ = (id) => document.getElementById(id);
 const card = $("card");
+
+// On the physical cards, Vocab 1–100 has the red tab and 101–200 the grey
+// tab. Physical card k holds red word k and grey word k + 100.
+const colorOf = (n) => (n <= 100 ? "red" : "grey");
+
+// localStorage can be missing or throw (private mode etc.), so every
+// access is guarded and the app still works without it.
+const store = {
+  get(key, fallback) {
+    try {
+      const v = localStorage.getItem("satvocab." + key);
+      return v === null ? fallback : JSON.parse(v);
+    } catch {
+      return fallback;
+    }
+  },
+  set(key, value) {
+    try {
+      localStorage.setItem("satvocab." + key, JSON.stringify(value));
+    } catch {}
+  },
+};
+
+// Shared "don't know" list, kept across sessions.
+const unknown = new Set(store.get("unknown", []));
+const saveUnknown = () => store.set("unknown", [...unknown].sort((a, b) => a - b));
 
 function chips(el, words) {
   el.innerHTML = "";
@@ -21,6 +48,12 @@ function extra(id, text) {
   el.lastElementChild.textContent = text || "";
 }
 
+function numLabel(c, long) {
+  const base = long ? `Card #${c.n}` : `#${c.n}`;
+  if (!c.guess) return base;
+  return base + (long ? " (guessed word)" : " (guess)");
+}
+
 // "47" or "#47" matches card 47; anything else matches the word.
 function matches(c, q) {
   const num = q.replace(/^#/, "");
@@ -33,12 +66,16 @@ function render() {
   card.hidden = !has;
   $("empty").hidden = has;
   if (!has) {
+    $("empty").textContent = $("source").value === "unknown"
+      ? "Your don't-know list is empty."
+      : "No words match that search.";
     $("counter").textContent = "0 / 0";
     $("bar").style.width = "0";
     return;
   }
   const c = deck[i];
   card.classList.remove("flipped");
+  card.dataset.color = colorOf(c.n);
   $("f-word").textContent = c.word;
   $("f-pos").textContent = c.pos;
   $("f-pron").textContent = c.pron;
@@ -46,8 +83,8 @@ function render() {
   $("b-pos").textContent = c.pos;
   $("b-def").textContent = c.def;
   $("b-ex").textContent = `“${c.ex}”`;
-  $("f-num").textContent = `Card #${c.n}${c.guess ? " (guessed word)" : ""}`;
-  $("b-num").textContent = `#${c.n}${c.guess ? " (guess)" : ""}`;
+  $("f-num").textContent = numLabel(c, true);
+  $("b-num").textContent = numLabel(c, false);
   extra("b-root", c.root);
   extra("b-note", c.note);
   chips($("b-syn"), c.syn);
@@ -62,9 +99,16 @@ function go(step) {
   render();
 }
 
+function inSource(c) {
+  const src = $("source").value;
+  if (src === "red" || src === "grey") return colorOf(c.n) === src;
+  if (src === "unknown") return unknown.has(c.n);
+  return true;
+}
+
 function filter() {
   const q = $("search").value.trim().toLowerCase();
-  deck = q ? order.filter((c) => matches(c, q)) : order;
+  deck = order.filter((c) => inSource(c) && (!q || matches(c, q)));
   i = 0;
   render();
 }
@@ -73,6 +117,7 @@ card.addEventListener("click", () => card.classList.toggle("flipped"));
 $("prev").addEventListener("click", () => go(-1));
 $("next").addEventListener("click", () => go(1));
 $("search").addEventListener("input", filter);
+$("source").addEventListener("change", filter);
 $("shuffle").addEventListener("click", () => {
   order = [...ALL];
   for (let j = order.length - 1; j > 0; j--) {
@@ -87,7 +132,7 @@ $("reset").addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.target.tagName === "INPUT" || $("cards-view").hidden) return;
+  if (["INPUT", "SELECT"].includes(e.target.tagName) || $("cards-view").hidden) return;
   if (e.key === "ArrowRight") go(1);
   else if (e.key === "ArrowLeft") go(-1);
   else if (e.key === " " || e.key === "Enter") {
@@ -108,7 +153,9 @@ function renderList() {
       row.innerHTML = `
         <div class="row-head"><span class="num inline"></span><strong></strong><span class="pos"></span><span class="pron"></span></div>
         <p class="def-line"></p><p class="ex"></p>`;
-      row.querySelector(".num").textContent = `#${c.n}${c.guess ? " (guess)" : ""}`;
+      const num = row.querySelector(".num");
+      num.textContent = numLabel(c, false);
+      num.dataset.color = colorOf(c.n);
       row.querySelector("strong").textContent = c.word;
       row.querySelector(".pos").textContent = c.pos;
       row.querySelector(".pron").textContent = c.pron;
@@ -119,15 +166,24 @@ function renderList() {
 }
 $("list-search").addEventListener("input", renderList);
 
+const MODES = ["cards", "train", "list"];
 function setMode(mode) {
-  const cards = mode === "cards";
-  $("cards-view").hidden = !cards;
-  $("list-view").hidden = cards;
-  $("mode-cards").classList.toggle("active", cards);
-  $("mode-list").classList.toggle("active", !cards);
-  if (!cards) renderList();
+  MODES.forEach((m) => {
+    $(`${m}-view`).hidden = m !== mode;
+    $(`mode-${m}`).classList.toggle("active", m === mode);
+  });
+  if (mode === "list") renderList();
+  if (mode === "cards") filter();
+  if (mode === "train") window.renderTrain();
+  store.set("mode", mode);
 }
-$("mode-cards").addEventListener("click", () => setMode("cards"));
-$("mode-list").addEventListener("click", () => setMode("list"));
+MODES.forEach((m) => $(`mode-${m}`).addEventListener("click", () => setMode(m)));
+
+// Open the card viewer on just the don't-know list (used by Train mode).
+function studyUnknown() {
+  $("source").value = "unknown";
+  $("search").value = "";
+  setMode("cards");
+}
 
 render();
