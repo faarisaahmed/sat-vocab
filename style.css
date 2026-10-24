@@ -350,3 +350,21 @@ h3 { margin: 0; font-size: 17px; }
   .t-word { flex-wrap: wrap; row-gap: 0; }
   .t-word .dot { align-self: center; }
 }
+
+/* Physical card tracker */
+.cardpiles { display: grid; gap: 8px; margin: 10px 0 6px; padding: 10px 12px; background: var(--bg); border-radius: 12px; }
+.cardpile { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cardpile .label { margin: 0; min-width: 120px; }
+.cchips { display: flex; flex-wrap: wrap; gap: 4px; }
+.cchip {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.cardpile.known .cchip { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.cardpile.unknown .cchip { background: var(--bad-soft); color: var(--ant); border-color: transparent; }
+.cardpile { flex-direction: column; gap: 4px; }
+.t-word { flex-wrap: wrap; row-gap: 0; }

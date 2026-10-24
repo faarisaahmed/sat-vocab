@@ -176,6 +176,43 @@ function pileRow(n, buttons) {
   return row;
 }
 
+// Where physical card k should be right now, judged by the word(s) the
+// current color filter is working on. With "both", a card stays in the
+// stack until both of its words are marked.
+function cardPlace(k) {
+  const red = BY_N.has(k) ? session.status[k] : "known";
+  const grey = BY_N.has(k + 100) ? session.status[k + 100] : "known";
+  const halves = session.filter === "red" ? [red]
+    : session.filter === "grey" ? [grey] : [red, grey];
+  if (halves.some((s) => !s)) return "stack";
+  return halves.includes("unknown") ? "unknown" : "known";
+}
+
+function cardPiles(player) {
+  const piles = { stack: [], known: [], unknown: [] };
+  player.cards.forEach((k) => piles[cardPlace(k)].push(k));
+  const box = el("div", "cardpiles");
+  [
+    ["stack", "In stack"],
+    ["known", "Discarded"],
+    ["unknown", "Don't-know pile"],
+  ].forEach(([key, label]) => {
+    const line = el("div", `cardpile ${key}`);
+    line.appendChild(el("span", "label", `${label} (${piles[key].length})`));
+    const chips = el("div", "cchips");
+    if (!piles[key].length) chips.appendChild(el("span", "muted small", "none"));
+    piles[key].forEach((k) => {
+      const chip = el("span", "cchip", `#${k}`);
+      const red = BY_N.get(k), grey = BY_N.get(k + 100);
+      chip.title = [red && `red: ${red.word}`, grey && `grey: ${grey.word}`].filter(Boolean).join(" · ");
+      chips.appendChild(chip);
+    });
+    line.appendChild(chips);
+    box.appendChild(line);
+  });
+  return box;
+}
+
 function renderPlayers() {
   const box = $("players");
   box.innerHTML = "";
@@ -197,9 +234,7 @@ function renderPlayers() {
     bar.appendChild(fill);
     col.appendChild(bar);
 
-    const cardsLine = el("p", "muted small",
-      `Cards: ${player.cards.map((k) => "#" + k).join(", ")}`);
-    col.appendChild(cardsLine);
+    col.appendChild(cardPiles(player));
 
     if (!stack.length) {
       const done = el("p", "done");
