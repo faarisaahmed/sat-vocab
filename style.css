@@ -142,6 +142,19 @@ input[type="search"]:focus { outline: 2px solid var(--accent); outline-offset: -
   padding: 3px 10px;
   border-radius: 999px;
 }
+.num {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.num.inline { position: static; }
+.back-head .num { margin-left: auto; }
+.extra { margin: 0 0 14px; font-size: 15px; }
+.extra .label { display: inline; margin: 0 8px 0 0; }
+
 .hint { position: absolute; bottom: 18px; margin: 0; font-size: 13px; color: var(--muted); }
 
 .back-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

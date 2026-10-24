@@ -1,4 +1,4 @@
-const ALL = [...window.VOCAB].sort((a, b) => a.word.localeCompare(b.word));
+const ALL = [...window.VOCAB].sort((a, b) => a.n - b.n);
 let order = [...ALL];
 let deck = order;
 let i = 0;
@@ -13,6 +13,19 @@ function chips(el, words) {
     s.textContent = w;
     el.appendChild(s);
   });
+}
+
+function extra(id, text) {
+  const el = $(id);
+  el.hidden = !text;
+  el.lastElementChild.textContent = text || "";
+}
+
+// "47" or "#47" matches card 47; anything else matches the word.
+function matches(c, q) {
+  const num = q.replace(/^#/, "");
+  if (/^\d+$/.test(num)) return String(c.n) === num;
+  return c.word.toLowerCase().includes(q);
 }
 
 function render() {
@@ -33,6 +46,10 @@ function render() {
   $("b-pos").textContent = c.pos;
   $("b-def").textContent = c.def;
   $("b-ex").textContent = `“${c.ex}”`;
+  $("f-num").textContent = `Card #${c.n}`;
+  $("b-num").textContent = `#${c.n}`;
+  extra("b-root", c.root);
+  extra("b-note", c.note);
   chips($("b-syn"), c.syn);
   chips($("b-ant"), c.ant);
   $("counter").textContent = `${i + 1} / ${deck.length}`;
@@ -47,7 +64,7 @@ function go(step) {
 
 function filter() {
   const q = $("search").value.trim().toLowerCase();
-  deck = q ? order.filter((c) => c.word.toLowerCase().includes(q)) : order;
+  deck = q ? order.filter((c) => matches(c, q)) : order;
   i = 0;
   render();
 }
@@ -84,13 +101,14 @@ function renderList() {
   const q = $("list-search").value.trim().toLowerCase();
   const list = $("list");
   list.innerHTML = "";
-  ALL.filter((c) => !q || c.word.toLowerCase().includes(q) || c.def.toLowerCase().includes(q))
+  ALL.filter((c) => !q || matches(c, q) || c.def.toLowerCase().includes(q))
     .forEach((c) => {
       const row = document.createElement("div");
       row.className = "row";
       row.innerHTML = `
-        <div class="row-head"><strong></strong><span class="pos"></span><span class="pron"></span></div>
+        <div class="row-head"><span class="num inline"></span><strong></strong><span class="pos"></span><span class="pron"></span></div>
         <p class="def-line"></p><p class="ex"></p>`;
+      row.querySelector(".num").textContent = `#${c.n}`;
       row.querySelector("strong").textContent = c.word;
       row.querySelector(".pos").textContent = c.pos;
       row.querySelector(".pron").textContent = c.pron;

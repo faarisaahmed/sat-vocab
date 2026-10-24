@@ -21,14 +21,15 @@
   <main>
     <section id="cards-view">
       <div class="toolbar">
-        <input id="search" type="search" placeholder="Search words…" autocomplete="off">
+        <input id="search" type="search" placeholder="Search a word or card #…" autocomplete="off">
         <button id="shuffle" class="btn">Shuffle</button>
-        <button id="reset" class="btn">A–Z</button>
+        <button id="reset" class="btn">In order</button>
       </div>
 
       <div class="stage">
         <div id="card" class="card" tabindex="0" aria-live="polite">
           <div class="face front">
+            <span class="num" id="f-num"></span>
             <span class="pos" id="f-pos"></span>
             <h2 class="word" id="f-word"></h2>
             <p class="pron" id="f-pron"></p>
@@ -38,9 +39,12 @@
             <div class="back-head">
               <h3 id="b-word"></h3>
               <span class="pos" id="b-pos"></span>
+              <span class="num inline" id="b-num"></span>
             </div>
             <p class="def" id="b-def"></p>
             <p class="ex" id="b-ex"></p>
+            <p class="extra" id="b-root"><span class="label">Word roots</span><span></span></p>
+            <p class="extra" id="b-note"><span class="label">Usage</span><span></span></p>
             <div class="rel">
               <div><span class="label">Synonyms</span><div class="chips" id="b-syn"></div></div>
               <div><span class="label">Antonyms</span><div class="chips ant" id="b-ant"></div></div>
