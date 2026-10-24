@@ -2,8 +2,10 @@
 // n = the "Vocab #" printed on the physical card. Each physical card holds
 // two words: n and n + 100. Definitions, examples, synonyms, antonyms and
 // root notes are original to this site.
-// Missing: Vocab 1 and Vocab 101 (that card wasn't in the photos).
+// Vocab 1 and 101 (one card) weren't in the photos, so those two words are
+// best guesses based on alphabetical position (guess: true).
 window.VOCAB = [
+  { n: 1, guess: true, word: "aberration", pos: "noun", pron: "ab-uh-RAY-shun", def: "A departure from what is normal, usual, or expected.", ex: "His bad grade was an aberration; he usually aces every test.", syn: ["anomaly", "deviation", "irregularity"], ant: ["norm", "standard"], root: "ab- = away; err- = wander" },
   { n: 2, word: "abstract", pos: "adjective", pron: "ab-STRAKT", def: "Existing as an idea rather than as something physical or concrete.", ex: "Justice is an abstract concept, but its effects are very real.", syn: ["theoretical", "conceptual", "intangible"], ant: ["concrete", "tangible"] },
   { n: 3, word: "acclaim", pos: "verb; also noun", pron: "uh-KLAYM", def: "To praise enthusiastically and publicly; enthusiastic public praise.", ex: "Critics acclaimed her debut album as the best of the year.", syn: ["praise", "applaud", "hail"], ant: ["criticize", "condemn"] },
   { n: 4, word: "adulation", pos: "noun", pron: "aj-uh-LAY-shun", def: "Excessive admiration or praise.", ex: "The young star struggled to stay grounded amid the fans' adulation.", syn: ["worship", "idolization", "flattery"], ant: ["contempt", "scorn"] },
@@ -103,6 +105,7 @@ window.VOCAB = [
   { n: 98, word: "hyperbole", pos: "noun", pron: "hy-PUR-buh-lee", def: "Exaggerated statements not meant to be taken literally.", ex: "\"I've told you a million times\" is a classic hyperbole.", syn: ["exaggeration", "overstatement", "embellishment"], ant: ["understatement"], root: "hyper- = above, excessively" },
   { n: 99, word: "hypothetical", pos: "adjective", pron: "hy-puh-THET-ih-kul", def: "Based on a suggested idea rather than known facts; imagined.", ex: "Let's consider a hypothetical: what if school started at 10 a.m.?", syn: ["theoretical", "supposed", "speculative"], ant: ["actual", "real"] },
   { n: 100, word: "immutable", pos: "adjective", pron: "ih-MYOO-tuh-bul", def: "Unchanging over time; unable to be changed.", ex: "The laws of physics are immutable, no matter how late you are.", syn: ["unchangeable", "fixed", "permanent"], ant: ["changeable", "variable"], root: "im- = not; mut- = change" },
+  { n: 101, guess: true, word: "impartial", pos: "adjective", pron: "im-PAR-shul", def: "Treating all sides equally; fair and unbiased.", ex: "Referees must stay impartial, even when their hometown team is playing.", syn: ["unbiased", "neutral", "objective"], ant: ["biased", "partisan"], root: "im- = not; part- = side, part" },
   { n: 102, word: "impeccable", pos: "adjective", pron: "im-PEK-uh-bul", def: "In accordance with the highest standards; flawless.", ex: "Her impeccable manners impressed the interviewer.", syn: ["flawless", "perfect", "faultless"], ant: ["flawed", "imperfect"] },
   { n: 103, word: "impede", pos: "verb", pron: "im-PEED", def: "To delay or block the progress of.", ex: "Fallen trees impeded the ambulance's route.", syn: ["hinder", "obstruct", "hamper"], ant: ["assist", "facilitate"], root: "ped- = foot (something tangling your feet)" },
   { n: 104, word: "implement", pos: "verb; also noun", pron: "IM-pluh-ment", def: "To put a plan into effect; a tool.", ex: "The school will implement the new lunch schedule next month.", syn: ["execute", "carry out", "apply"], ant: ["abandon", "neglect"] },

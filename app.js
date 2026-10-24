@@ -46,8 +46,8 @@ function render() {
   $("b-pos").textContent = c.pos;
   $("b-def").textContent = c.def;
   $("b-ex").textContent = `“${c.ex}”`;
-  $("f-num").textContent = `Card #${c.n}`;
-  $("b-num").textContent = `#${c.n}`;
+  $("f-num").textContent = `Card #${c.n}${c.guess ? " (guessed word)" : ""}`;
+  $("b-num").textContent = `#${c.n}${c.guess ? " (guess)" : ""}`;
   extra("b-root", c.root);
   extra("b-note", c.note);
   chips($("b-syn"), c.syn);
@@ -108,7 +108,7 @@ function renderList() {
       row.innerHTML = `
         <div class="row-head"><span class="num inline"></span><strong></strong><span class="pos"></span><span class="pron"></span></div>
         <p class="def-line"></p><p class="ex"></p>`;
-      row.querySelector(".num").textContent = `#${c.n}`;
+      row.querySelector(".num").textContent = `#${c.n}${c.guess ? " (guess)" : ""}`;
       row.querySelector("strong").textContent = c.word;
       row.querySelector(".pos").textContent = c.pos;
       row.querySelector(".pron").textContent = c.pron;
